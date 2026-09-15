@@ -255,10 +255,7 @@ var CHECKLIST_GROUPS = [
 var ROUTES = {
   basin: { label: "Foot Basin Log", short: "Foot Basin", cite: "16 TAC §83.108(f)-(g)",
     desc: "Each non-whirlpool foot basin must be drained, cleaned and disinfected after every client. A dated record of each cleaning is required, and must show if a basin was not used on a given work day.",
-    types: [ {id:"daily", label:"After-client clean"} ], stationPlaceholder: "e.g. Station 1" },
-  liner: { label: "Spa Liner & Portable Jet Log", short: "Liner / Jet", cite: "16 TAC §83.108(j)-(k)",
-    desc: "When disposable spa liners and portable whirlpool jets are used in place of cleaning a whirlpool basin, the record must show when the liner was used and discarded, and when the jet was used and disinfected — or that the jet was not used that work day.",
-    types: [ {id:"daily", label:"Liner used & discarded / jet disinfected"} ], stationPlaceholder: "e.g. Station 1" }
+    types: [ {id:"daily", label:"After-client clean"} ], stationPlaceholder: "e.g. Station 1" }
 };
 
 // ---------- db ----------
@@ -276,8 +273,7 @@ function setInitials(v){ try { localStorage.setItem("cb_initials", v); } catch(e
 var TABS = [
   {path:"#/", label:"Home"},
   {path:"#/checklist", label:"Self-Audit Checklist"},
-  {path:"#/log/basin", label:"Foot Basin"},
-  {path:"#/log/liner", label:"Liner / Jet"}
+  {path:"#/log/basin", label:"Foot Basin"}
 ];
 
 function renderTabs(){
@@ -320,7 +316,6 @@ function renderHome(app){
     '<div class="card-grid">' +
       '<a class="card" href="#/checklist"><span class="tag">SELF-AUDIT</span><h3>Compliance Checklist</h3><p>Facility, sanitation, tools, postings, and prohibited products — everything TDLR looks for during an inspection.</p></a>' +
       '<a class="card" href="#/log/basin"><span class="tag">REQUIRED LOG</span><h3>Foot Basin</h3><p>Non-whirlpool basin cleaning records, §83.108(f)-(g).</p></a>' +
-      '<a class="card" href="#/log/liner"><span class="tag">REQUIRED LOG</span><h3>Spa Liner &amp; Jet</h3><p>Disposable liner and portable jet records, §83.108(j)-(k).</p></a>' +
     '</div>' +
     '<footer class="note">Built for Cio Bela Multi-Service Salon. This tool organizes recordkeeping; it does not replace reading 16 Texas Administrative Code Chapter 83 or TDLR\'s own forms and guidance.</footer>';
 }
@@ -372,7 +367,6 @@ function renderChecklist(app){
 // ---------- log pages ----------
 function renderLog(app, key, presetStation){
   var r = ROUTES[key];
-  var typeOptions = r.types;
   app.innerHTML =
     '<h1>' + esc(r.label) + '</h1>' +
     (presetStation ? '<div class="rule-note" style="background:var(--surface);border-left-color:var(--accent-strong);">Showing <b>' + esc(presetStation) + '</b> only. <a href="#/log/' + key + '">View all stations</a></div>' : '') +
@@ -381,17 +375,10 @@ function renderLog(app, key, presetStation){
       '<div class="field-row">' +
         '<div class="field"><label for="f_date">Date</label><input type="date" id="f_date"></div>' +
         '<div class="field"><label for="f_time">Time</label><input type="time" id="f_time"></div>' +
-        '<div class="field"><label for="f_station">Station / spa</label><input type="text" id="f_station" list="stationList" placeholder="' + esc(r.stationPlaceholder || "e.g. Station 1") + '"></div>' +
+        '<div class="field"><label for="f_station">Station</label><input type="text" id="f_station" list="stationList" placeholder="' + esc(r.stationPlaceholder || "e.g. Station 1") + '"></div>' +
         '<div class="field"><label for="f_initials">Initials</label><input type="text" id="f_initials" placeholder="e.g. SD"></div>' +
       '</div>' +
       '<datalist id="stationList"></datalist>' +
-      (key === "footspa" ?
-        '<div class="field"><label>Cleaning type</label><div class="toggle-row" id="type-toggle">' +
-          typeOptions.map(function(t,i){ return '<button type="button" class="toggle-btn' + (i===0?' on':'') + '" data-type="' + t.id + '">' + esc(t.label) + '</button>'; }).join('') +
-        '</div></div>' : '') +
-      (key === "liner" ?
-        '<div class="checkline"><input type="checkbox" id="f_liner_used" checked><label for="f_liner_used">Spa liner used and discarded</label></div>' +
-        '<div class="checkline"><input type="checkbox" id="f_jet_disinfected" checked><label for="f_jet_disinfected">Portable jet used and disinfected</label></div>' : '') +
       '<div class="checkline"><input type="checkbox" id="f_not_used"><label for="f_not_used">Not used today (mark this station as not in service — required if skipped)</label></div>' +
       '<div class="field" style="margin-bottom:14px;"><label for="f_notes">Notes (optional)</label><textarea id="f_notes" placeholder="Anything worth noting for this entry"></textarea></div>' +
       '<button type="submit" class="primary">Save entry</button>' +
@@ -408,27 +395,11 @@ function renderLog(app, key, presetStation){
   document.getElementById("f_initials").value = getInitials();
   if (presetStation) document.getElementById("f_station").value = presetStation;
 
-  var selectedType = typeOptions[0].id;
-  if (key === "footspa") {
-    document.getElementById("type-toggle").addEventListener("click", function(e){
-      var btn = e.target.closest(".toggle-btn");
-      if (!btn) return;
-      document.querySelectorAll("#type-toggle .toggle-btn").forEach(function(b){ b.classList.remove("on"); });
-      btn.classList.add("on");
-      selectedType = btn.getAttribute("data-type");
-    });
-  }
-
   var notUsedBox = document.getElementById("f_not_used");
   var toggleFields = ["f_time","f_station"];
   notUsedBox.addEventListener("change", function(){
     var disabled = notUsedBox.checked;
     toggleFields.forEach(function(id){ document.getElementById(id).disabled = disabled; });
-    if (key === "footspa") document.querySelectorAll("#type-toggle .toggle-btn").forEach(function(b){ b.disabled = disabled; });
-    if (key === "liner") {
-      document.getElementById("f_liner_used").disabled = disabled;
-      document.getElementById("f_jet_disinfected").disabled = disabled;
-    }
   });
 
   var allEntries = [];
@@ -476,20 +447,12 @@ function renderLog(app, key, presetStation){
       return;
     }
     var rows = filtered.map(function(e){
-      var badge = e.notUsed ? '<span class="badge notused">Not used</span>' :
-        (e.type === "biweekly" ? '<span class="badge biweekly">Bi-weekly</span>' : '<span class="badge daily">Daily</span>');
-      var detail = "";
-      if (key === "liner" && !e.notUsed) {
-        var bits = [];
-        if (e.linerUsed) bits.push("liner discarded");
-        if (e.jetDisinfected) bits.push("jet disinfected");
-        detail = bits.join(", ");
-      }
+      var badge = e.notUsed ? '<span class="badge notused">Not used</span>' : '<span class="badge daily">Daily</span>';
       return '<tr class="' + (e.notUsed ? 'not-used' : '') + '">' +
         '<td>' + esc(fmtDate(e.date)) + '</td>' +
         '<td>' + esc(e.time||'') + '</td>' +
         '<td>' + esc(e.station || '—') + '</td>' +
-        '<td>' + badge + (detail ? '<br><span style="color:var(--text-soft);font-size:.75rem;">'+esc(detail)+'</span>' : '') + '</td>' +
+        '<td>' + badge + '</td>' +
         '<td>' + esc(e.initials||'') + '</td>' +
         '<td>' + esc(e.notes||'') + '</td>' +
         '</tr>';
@@ -518,11 +481,6 @@ function renderLog(app, key, presetStation){
       notUsed: notUsed,
       createdAt: new Date().toISOString()
     };
-    if (key === "footspa") entry.type = notUsed ? "" : selectedType;
-    if (key === "liner") {
-      entry.linerUsed = notUsed ? false : document.getElementById("f_liner_used").checked;
-      entry.jetDisinfected = notUsed ? false : document.getElementById("f_jet_disinfected").checked;
-    }
     var btn = e.target.querySelector("button[type=submit]");
     btn.disabled = true;
     addDoc(col(key), entry).then(function(){
