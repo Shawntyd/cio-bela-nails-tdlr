@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cio Bela — Nails TDLR Compliance</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Jost:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #F5F0E8;
+    --bark: #2C2016;
+    --gold: #B8935A;
+    --gold-light: #D4B896;
+    --charcoal: #1A1410;
+    --bg: var(--cream);
+    --surface: #ffffff;
+    --text: var(--bark);
+    --text-soft: #6b5d4c;
+    --border: #E4DBCB;
+    --accent: var(--gold);
+    --accent-strong: #96754a;
+    --danger: #a4432f;
+    --danger-bg: #f6e5e0;
+    --ok-bg: #eef1e5;
+    --ok-text: #52642f;
+    --shadow: 0 1px 2px rgba(44,32,22,0.06), 0 4px 16px rgba(44,32,22,0.06);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #16120c;
+      --surface: #211a12;
+      --text: #EFE6D8;
+      --text-soft: #b8a98f;
+      --border: #3a2e20;
+      --accent: var(--gold-light);
+      --accent-strong: var(--gold-light);
+      --danger: #d9776a;
+      --danger-bg: #3a2019;
+      --ok-bg: #26301c;
+      --ok-text: #c3d19a;
+      --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 4px 16px rgba(0,0,0,0.3);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #16120c;
+    --surface: #211a12;
+    --text: #EFE6D8;
+    --text-soft: #b8a98f;
+    --border: #3a2e20;
+    --accent: var(--gold-light);
+    --accent-strong: var(--gold-light);
+    --danger: #d9776a;
+    --danger-bg: #3a2019;
+    --ok-bg: #26301c;
+    --ok-text: #c3d19a;
+    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 4px 16px rgba(0,0,0,0.3);
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Jost', -apple-system, BlinkMacSystemFont, sans-serif;
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+  h1, h2, h3 { font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 600; margin: 0 0 0.3em; color: var(--text); }
+  h1 { font-size: 2.1rem; font-style: italic; }
+  h2 { font-size: 1.5rem; }
+  h3 { font-size: 1.15rem; font-style: italic; }
+  p { color: var(--text-soft); margin: 0 0 1em; }
+  a { color: var(--accent-strong); }
+
+  #topbar {
+    position: sticky; top: 0; z-index: 10;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 6px;
+    padding: 14px 20px;
+    overflow-x: auto;
+  }
+  #topbar .brand {
+    font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 600;
+    font-size: 1.15rem; color: var(--text); white-space: nowrap; margin-right: 12px;
+    text-decoration: none;
+  }
+  #topbar nav { display: flex; gap: 4px; flex-wrap: nowrap; }
+  #topbar a.tab {
+    text-decoration: none; color: var(--text-soft); font-size: 0.85rem;
+    padding: 7px 12px; border-radius: 20px; white-space: nowrap;
+    border: 1px solid transparent;
+  }
+  #topbar a.tab.active { background: var(--accent); color: var(--charcoal); font-weight: 500; }
+  #topbar a.tab:not(.active):hover { border-color: var(--border); }
+
+  main { max-width: 880px; margin: 0 auto; padding: 32px 20px 80px; }
+  .lede { font-size: 1.02rem; max-width: 62ch; }
+
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin-top: 24px; }
+  .card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+    padding: 20px; box-shadow: var(--shadow); text-decoration: none; color: var(--text);
+    display: block;
+  }
+  .card .tag { font-size: 0.72rem; color: var(--accent-strong); font-weight: 600; letter-spacing: 0.02em; }
+  .card h3 { margin: 6px 0 6px; }
+  .card p { margin: 0; font-size: 0.88rem; }
+
+  .rule-note {
+    background: var(--ok-bg); border-left: 3px solid var(--accent); border-radius: 4px;
+    padding: 12px 16px; font-size: 0.85rem; color: var(--text); margin: 18px 0 26px;
+  }
+  .rule-note b { color: var(--text); }
+
+  section.group { margin-bottom: 30px; }
+  section.group h2 { border-bottom: 1px solid var(--border); padding-bottom: 8px; margin-bottom: 4px; }
+  .item {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 12px 4px; border-bottom: 1px solid var(--border);
+  }
+  .item:last-child { border-bottom: none; }
+  .item input[type=checkbox] { width: 19px; height: 19px; margin-top: 2px; accent-color: var(--accent-strong); flex-shrink: 0; }
+  .item label { cursor: pointer; font-size: 0.93rem; }
+  .item .rule-cite { color: var(--text-soft); font-size: 0.78rem; display: block; margin-top: 2px; }
+  .item.checked label { color: var(--text-soft); text-decoration: line-through; text-decoration-color: var(--border); }
+
+  form.entry {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+    padding: 20px; box-shadow: var(--shadow); margin: 20px 0 28px;
+  }
+  .field-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 12px; }
+  .field { display: flex; flex-direction: column; gap: 4px; }
+  .field label { font-size: 0.78rem; color: var(--text-soft); font-weight: 500; }
+  input[type=text], input[type=date], input[type=time], textarea, select {
+    font-family: 'Jost', sans-serif; font-size: 0.92rem; padding: 9px 10px;
+    border: 1px solid var(--border); border-radius: 6px; background: var(--bg); color: var(--text);
+    width: 100%;
+  }
+  textarea { resize: vertical; min-height: 50px; }
+  .toggle-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
+  .toggle-btn {
+    border: 1px solid var(--border); background: var(--bg); color: var(--text-soft);
+    padding: 8px 14px; border-radius: 20px; font-size: 0.85rem; cursor: pointer;
+  }
+  .toggle-btn.on { background: var(--accent); border-color: var(--accent); color: var(--charcoal); font-weight: 500; }
+  .checkline { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; font-size: 0.88rem; }
+  .checkline input { width: 18px; height: 18px; accent-color: var(--accent-strong); }
+  button.primary {
+    background: var(--accent-strong); color: #fff; border: none; padding: 11px 22px;
+    border-radius: 6px; font-size: 0.92rem; font-weight: 500; cursor: pointer;
+  }
+  button.primary:hover { opacity: 0.92; }
+  button.primary:disabled { opacity: 0.5; cursor: not-allowed; }
+  .status-msg { font-size: 0.85rem; margin-top: 10px; }
+  .status-msg.ok { color: var(--ok-text); }
+  .status-msg.err { color: var(--danger); }
+
+  .filter-bar { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin: 24px 0 10px; }
+  .filter-bar select { width: auto; }
+  table.log { width: 100%; border-collapse: collapse; font-size: 0.85rem; margin-top: 8px; }
+  table.log th, table.log td { text-align: left; padding: 9px 10px; border-bottom: 1px solid var(--border); }
+  table.log th { color: var(--text-soft); font-weight: 500; font-size: 0.75rem; text-transform: none; }
+  table.log tr.not-used td { color: var(--text-soft); font-style: italic; }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 0.72rem; }
+  .badge.daily { background: var(--ok-bg); color: var(--ok-text); }
+  .badge.biweekly { background: #e6ddf0; color: #5b4a7a; }
+  .badge.notused { background: var(--border); color: var(--text-soft); }
+  .empty-state { color: var(--text-soft); font-size: 0.88rem; padding: 24px 0; text-align: center; }
+
+  footer.note { margin-top: 50px; padding-top: 16px; border-top: 1px solid var(--border); font-size: 0.78rem; color: var(--text-soft); }
+
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+</style>
+</head>
+<body>
+<div id="topbar">
+  <a class="brand" href="#/">Cio Bela · Nails Compliance</a>
+  <nav id="tabs"></nav>
+</div>
+<main id="app"></main>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {
+  getFirestore, doc, setDoc, onSnapshot,
+  collection, addDoc, query, orderBy, limit
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+// TODO: replace with the real config once the cio-bela-tdlr-compliance
+// Firebase project is created (Project settings → your apps → SDK setup).
+const firebaseConfig = {
+  apiKey: "REPLACE_ME",
+  authDomain: "REPLACE_ME.firebaseapp.com",
+  projectId: "REPLACE_ME",
+  storageBucket: "REPLACE_ME.appspot.com",
+  messagingSenderId: "REPLACE_ME",
+  appId: "REPLACE_ME"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+(function(){
+
+// ---------- rule content ----------
+var CHECKLIST_GROUPS = [
+  { title: "Admin", cite: "16 TAC §§83.71(g), 83.114; Tex. Occ. Code §1603.357", note: "Owner responsibility \u2014 not on the artists.", items: [
+    "Autoclave, dry heat sterilizer, or UV sanitizer on site for manicure/pedicure services",
+    "Sink with hot and cold running water in the service area",
+    "Covered waste receptacles at each station; trash emptied and lined daily",
+    "Client and practitioner seating provided",
+    "Ventilation (exhaust fan / air filtration) clears chemical fumes and odors",
+    "Restroom available on or near the premises; no chemicals stored in restroom",
+    "Floors, walls, shelves and fixtures clean and in good repair",
+    "Barbering & Cosmetology Health and Safety Rules posted",
+    "Current establishment license posted",
+    "Most recent inspection report available on request",
+    "Consumer complaint sign posted",
+    "Human Trafficking Awareness sign posted"
+  ]},
+  { title: "Your License", cite: "Tex. Occ. Code §1603.357", items: [
+    "Your license displayed at your workstation"
+  ]},
+  { title: "Before Every Client", cite: "16 TAC §§83.101–83.102", items: [
+    "Hands washed with soap and water, or hand sanitizer used, before each service",
+    "No service performed on a client with a contagious condition or broken/inflamed skin or nail tissue",
+    "Manicure table disinfected before each client",
+    "Disinfectant jars/containers free of visible debris; solution mixed fresh daily"
+  ]},
+  { title: "Manicure & Pedicure Tools", cite: "16 TAC §83.106", items: [
+    "Metal pusher, files, cuticle nippers/scissors, tweezers, and nail clippers cleaned, disinfected, and sterilized or sanitized after each client",
+    "Orangewood sticks, cotton balls, nail wipes, and disposable towels discarded after each client (single-use)",
+    "Buffer blocks, porous files, pumice, and callus rasps cleaned and disinfected after each use; discarded immediately if exposed to broken or unhealthy skin",
+    "Terry cloth towels, finger bowls, and spatulas replaced with clean/new for each client",
+    "Clean and disinfected implements stored separately from soiled ones, in a closed, dry, debris-free space"
+  ]},
+  { title: "Electric Drill Bits", cite: "16 TAC §83.107", items: [
+    "Only files/drills manufactured for professional nail industry use (no hardware or hobby tools)",
+    "Diamond, carbide, natural, and metal bits cleaned (brush, ultrasonic, or 5–10 min acetone soak) after each use",
+    "Bits disinfected by full immersion between clients, then sterilized",
+    "Buffing bits and chamois cleaned with soap and water at the end of each day"
+  ]},
+  { title: "Prohibited Products & Practices", cite: "16 TAC §§83.112–83.113", items: [
+    "No liquid MMA (methyl methacrylate monomer) on premises or in use",
+    "No credo blades or razor-type callus shavers",
+    "No alum or astringents in stick/lump form",
+    "No formaldehyde-based fumigants",
+    "Nothing used that penetrates the dermis layer of skin"
+  ]}
+];
+
+var ROUTES = {
+  basin: { label: "Foot Basin Log", short: "Foot Basin", cite: "16 TAC §83.108(f)-(g)",
+    desc: "Each non-whirlpool foot basin must be drained, cleaned and disinfected after every client. A dated record of each cleaning is required, and must show if a basin was not used on a given work day.",
+    types: [ {id:"daily", label:"After-client clean"} ], stationPlaceholder: "e.g. Station 1" },
+  liner: { label: "Spa Liner & Portable Jet Log", short: "Liner / Jet", cite: "16 TAC §83.108(j)-(k)",
+    desc: "When disposable spa liners and portable whirlpool jets are used in place of cleaning a whirlpool basin, the record must show when the liner was used and discarded, and when the jet was used and disinfected — or that the jet was not used that work day.",
+    types: [ {id:"daily", label:"Liner used & discarded / jet disinfected"} ], stationPlaceholder: "e.g. Station 1" }
+};
+
+// ---------- db ----------
+function col(name){ return collection(db, "nails/" + name + "/logs"); }
+
+// ---------- helpers ----------
+function todayStr(){ var d = new Date(); return d.toISOString().slice(0,10); }
+function nowTimeStr(){ var d = new Date(); return d.toTimeString().slice(0,5); }
+function fmtDate(s){ if(!s) return ""; var p = s.split("-"); return p[1]+"/"+p[2]+"/"+p[0]; }
+function esc(s){ return (s||"").replace(/[&<>"']/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
+function getInitials(){ try { return localStorage.getItem("cb_initials") || ""; } catch(e){ return ""; } }
+function setInitials(v){ try { localStorage.setItem("cb_initials", v); } catch(e){} }
+
+// ---------- router ----------
+var TABS = [
+  {path:"#/", label:"Home"},
+  {path:"#/checklist", label:"Self-Audit Checklist"},
+  {path:"#/log/basin", label:"Foot Basin"},
+  {path:"#/log/liner", label:"Liner / Jet"}
+];
+
+function renderTabs(){
+  var hash = location.hash || "#/";
+  var html = TABS.map(function(t){
+    var active = (t.path === "#/" ? hash === "#/" || hash === "" : hash.indexOf(t.path) === 0);
+    return '<a class="tab' + (active ? ' active' : '') + '" href="' + t.path + '">' + t.label + '</a>';
+  }).join("");
+  document.getElementById("tabs").innerHTML = html;
+}
+
+function route(){
+  renderTabs();
+  var hash = location.hash || "#/";
+  var app = document.getElementById("app");
+  if (hash === "#/" || hash === "") { renderHome(app); }
+  else if (hash === "#/checklist") { renderChecklist(app); }
+  else if (hash.indexOf("#/log/") === 0) {
+    var rest = hash.replace("#/log/","");
+    var key = rest.split("?")[0];
+    var qs = rest.indexOf("?") >= 0 ? rest.slice(rest.indexOf("?")+1) : "";
+    var presetStation = "";
+    qs.split("&").forEach(function(pair){
+      var kv = pair.split("=");
+      if (kv[0] === "station") presetStation = decodeURIComponent(kv[1] || "");
+    });
+    if (ROUTES[key]) renderLog(app, key, presetStation);
+    else renderHome(app);
+  } else {
+    renderHome(app);
+  }
+}
+window.addEventListener("hashchange", route);
+
+// ---------- home ----------
+function renderHome(app){
+  app.innerHTML =
+    '<h1>Nails — TDLR Compliance Center</h1>' +
+    '<p class="lede">Everything the nail service category needs to stay compliant with Texas Department of Licensing and Regulation (TDLR) health and safety rules — a running self-audit checklist, plus the cleaning logs TDLR requires you to keep on record. Logs sync live across every device and stay available for at least 60 days.</p>' +
+    '<div class="card-grid">' +
+      '<a class="card" href="#/checklist"><span class="tag">SELF-AUDIT</span><h3>Compliance Checklist</h3><p>Facility, sanitation, tools, postings, and prohibited products — everything TDLR looks for during an inspection.</p></a>' +
+      '<a class="card" href="#/log/basin"><span class="tag">REQUIRED LOG</span><h3>Foot Basin</h3><p>Non-whirlpool basin cleaning records, §83.108(f)-(g).</p></a>' +
+      '<a class="card" href="#/log/liner"><span class="tag">REQUIRED LOG</span><h3>Spa Liner &amp; Jet</h3><p>Disposable liner and portable jet records, §83.108(j)-(k).</p></a>' +
+    '</div>' +
+    '<footer class="note">Built for Cio Bela Multi-Service Salon. This tool organizes recordkeeping; it does not replace reading 16 Texas Administrative Code Chapter 83 or TDLR\'s own forms and guidance.</footer>';
+}
+
+// ---------- checklist ----------
+function renderChecklist(app){
+  app.innerHTML = '<h1>Nails Self-Audit Checklist</h1>' +
+    '<p class="lede">A running checklist of TDLR health and safety standards for nail services. This is an internal tool to help you stay ready for inspection — it is not one of the official records TDLR requires you to produce.</p>' +
+    '<div class="rule-note">Check off an item once you\'ve confirmed it in the salon. Checks are shared across every device and stay checked until someone unchecks them &mdash; treat this as a living state, not a dated log.</div>' +
+    '<div id="checklist-body">Loading…</div>';
+
+  var body = document.getElementById("checklist-body");
+  var itemIndex = 0;
+  var allItems = [];
+  CHECKLIST_GROUPS.forEach(function(g){ g.items.forEach(function(txt){ allItems.push({id: "i"+itemIndex, group: g.title, cite: g.cite, txt: txt}); itemIndex++; }); });
+
+  var docRef = doc(db, "nails/checklist");
+  onSnapshot(docRef, function(snap){
+      var data = (snap.exists() && snap.data()) || {};
+      var checked = data.items || {};
+      var html = "";
+      var byGroup = {};
+      allItems.forEach(function(it){ (byGroup[it.group] = byGroup[it.group] || []).push(it); });
+      CHECKLIST_GROUPS.forEach(function(g){
+        html += '<section class="group"><h2>' + esc(g.title) + '</h2><div class="rule-cite" style="color:var(--text-soft);font-size:.78rem;margin-bottom:6px;">' + esc(g.cite) + (g.note ? ' &middot; ' + esc(g.note) : '') + '</div>';
+        byGroup[g.title].forEach(function(it){
+          var isChecked = !!(checked[it.id] && checked[it.id].on);
+          html += '<div class="item' + (isChecked ? ' checked' : '') + '">' +
+            '<input type="checkbox" id="cb_' + it.id + '" ' + (isChecked ? 'checked' : '') + ' data-id="' + it.id + '">' +
+            '<label for="cb_' + it.id + '">' + esc(it.txt) + '</label>' +
+            '</div>';
+        });
+        html += '</section>';
+      });
+      body.innerHTML = html;
+      body.querySelectorAll('input[type=checkbox]').forEach(function(cb){
+        cb.addEventListener('change', function(){
+          var id = cb.getAttribute('data-id');
+          var merged = {};
+          merged[id] = { on: cb.checked, updatedAt: new Date().toISOString() };
+          setDoc(docRef, { items: Object.assign({}, checked, merged) });
+        });
+      });
+    }, function(err){
+      body.innerHTML = '<p>Could not load checklist right now (' + esc(err.code || 'error') + '). Try reloading.</p>';
+    });
+}
+
+// ---------- log pages ----------
+function renderLog(app, key, presetStation){
+  var r = ROUTES[key];
+  var typeOptions = r.types;
+  app.innerHTML =
+    '<h1>' + esc(r.label) + '</h1>' +
+    (presetStation ? '<div class="rule-note" style="background:var(--surface);border-left-color:var(--accent-strong);">Showing <b>' + esc(presetStation) + '</b> only. <a href="#/log/' + key + '">View all stations</a></div>' : '') +
+    '<div class="rule-note"><b>' + esc(r.cite) + '</b> — ' + esc(r.desc) + ' Records must be retained and available on request for at least 60 days.</div>' +
+    '<form class="entry" id="entry-form">' +
+      '<div class="field-row">' +
+        '<div class="field"><label for="f_date">Date</label><input type="date" id="f_date"></div>' +
+        '<div class="field"><label for="f_time">Time</label><input type="time" id="f_time"></div>' +
+        '<div class="field"><label for="f_station">Station / spa</label><input type="text" id="f_station" list="stationList" placeholder="' + esc(r.stationPlaceholder || "e.g. Station 1") + '"></div>' +
+        '<div class="field"><label for="f_initials">Initials</label><input type="text" id="f_initials" placeholder="e.g. SD"></div>' +
+      '</div>' +
+      '<datalist id="stationList"></datalist>' +
+      (key === "footspa" ?
+        '<div class="field"><label>Cleaning type</label><div class="toggle-row" id="type-toggle">' +
+          typeOptions.map(function(t,i){ return '<button type="button" class="toggle-btn' + (i===0?' on':'') + '" data-type="' + t.id + '">' + esc(t.label) + '</button>'; }).join('') +
+        '</div></div>' : '') +
+      (key === "liner" ?
+        '<div class="checkline"><input type="checkbox" id="f_liner_used" checked><label for="f_liner_used">Spa liner used and discarded</label></div>' +
+        '<div class="checkline"><input type="checkbox" id="f_jet_disinfected" checked><label for="f_jet_disinfected">Portable jet used and disinfected</label></div>' : '') +
+      '<div class="checkline"><input type="checkbox" id="f_not_used"><label for="f_not_used">Not used today (mark this station as not in service — required if skipped)</label></div>' +
+      '<div class="field" style="margin-bottom:14px;"><label for="f_notes">Notes (optional)</label><textarea id="f_notes" placeholder="Anything worth noting for this entry"></textarea></div>' +
+      '<button type="submit" class="primary">Save entry</button>' +
+      '<div class="status-msg" id="entry-status"></div>' +
+    '</form>' +
+    '<div class="filter-bar">' +
+      '<select id="filter-range"><option value="60">Last 60 days</option><option value="7">Last 7 days</option><option value="all">All entries</option></select>' +
+      '<select id="filter-station"><option value="">All stations</option></select>' +
+    '</div>' +
+    '<div id="log-table"><div class="empty-state">Loading records…</div></div>';
+
+  document.getElementById("f_date").value = todayStr();
+  document.getElementById("f_time").value = nowTimeStr();
+  document.getElementById("f_initials").value = getInitials();
+  if (presetStation) document.getElementById("f_station").value = presetStation;
+
+  var selectedType = typeOptions[0].id;
+  if (key === "footspa") {
+    document.getElementById("type-toggle").addEventListener("click", function(e){
+      var btn = e.target.closest(".toggle-btn");
+      if (!btn) return;
+      document.querySelectorAll("#type-toggle .toggle-btn").forEach(function(b){ b.classList.remove("on"); });
+      btn.classList.add("on");
+      selectedType = btn.getAttribute("data-type");
+    });
+  }
+
+  var notUsedBox = document.getElementById("f_not_used");
+  var toggleFields = ["f_time","f_station"];
+  notUsedBox.addEventListener("change", function(){
+    var disabled = notUsedBox.checked;
+    toggleFields.forEach(function(id){ document.getElementById(id).disabled = disabled; });
+    if (key === "footspa") document.querySelectorAll("#type-toggle .toggle-btn").forEach(function(b){ b.disabled = disabled; });
+    if (key === "liner") {
+      document.getElementById("f_liner_used").disabled = disabled;
+      document.getElementById("f_jet_disinfected").disabled = disabled;
+    }
+  });
+
+  var allEntries = [];
+  var stationPreApplied = false;
+  var logQuery = query(col(key), orderBy("date", "desc"), limit(500));
+  onSnapshot(logQuery, function(snap){
+    allEntries = snap.docs.map(function(d){ return Object.assign({_id: d.id}, d.data()); });
+    populateStationFilter(allEntries);
+    renderTable(allEntries);
+  }, function(err){
+    document.getElementById("log-table").innerHTML = '<p>Could not load records (' + esc(err.code||'error') + ').</p>';
+  });
+
+  function populateStationFilter(entries){
+    var sel = document.getElementById("filter-station");
+    var current = sel.value;
+    var stations = Array.from(new Set(entries.map(function(e){ return e.station; }).filter(Boolean))).sort();
+    sel.innerHTML = '<option value="">All stations</option>' + stations.map(function(s){ return '<option value="'+esc(s)+'">'+esc(s)+'</option>'; }).join('');
+    if (presetStation && !stationPreApplied) {
+      sel.value = presetStation;
+      stationPreApplied = true;
+    } else {
+      sel.value = current;
+    }
+    var dl = document.getElementById("stationList");
+    if (dl) dl.innerHTML = stations.map(function(s){ return '<option value="'+esc(s)+'">'; }).join('');
+  }
+
+  function renderTable(entries){
+    var range = document.getElementById("filter-range").value;
+    var stationFilter = document.getElementById("filter-station").value;
+    var cutoff = null;
+    if (range !== "all") {
+      var d = new Date(); d.setDate(d.getDate() - parseInt(range,10));
+      cutoff = d.toISOString().slice(0,10);
+    }
+    var filtered = entries.filter(function(e){
+      if (cutoff && e.date < cutoff) return false;
+      if (stationFilter && e.station !== stationFilter) return false;
+      return true;
+    });
+    var holder = document.getElementById("log-table");
+    if (!filtered.length) {
+      holder.innerHTML = '<div class="empty-state">No entries in this range yet.</div>';
+      return;
+    }
+    var rows = filtered.map(function(e){
+      var badge = e.notUsed ? '<span class="badge notused">Not used</span>' :
+        (e.type === "biweekly" ? '<span class="badge biweekly">Bi-weekly</span>' : '<span class="badge daily">Daily</span>');
+      var detail = "";
+      if (key === "liner" && !e.notUsed) {
+        var bits = [];
+        if (e.linerUsed) bits.push("liner discarded");
+        if (e.jetDisinfected) bits.push("jet disinfected");
+        detail = bits.join(", ");
+      }
+      return '<tr class="' + (e.notUsed ? 'not-used' : '') + '">' +
+        '<td>' + esc(fmtDate(e.date)) + '</td>' +
+        '<td>' + esc(e.time||'') + '</td>' +
+        '<td>' + esc(e.station || '—') + '</td>' +
+        '<td>' + badge + (detail ? '<br><span style="color:var(--text-soft);font-size:.75rem;">'+esc(detail)+'</span>' : '') + '</td>' +
+        '<td>' + esc(e.initials||'') + '</td>' +
+        '<td>' + esc(e.notes||'') + '</td>' +
+        '</tr>';
+    }).join("");
+    holder.innerHTML = '<table class="log"><thead><tr><th>Date</th><th>Time</th><th>Station</th><th>Type</th><th>By</th><th>Notes</th></tr></thead><tbody>' + rows + '</tbody></table>';
+  }
+
+  document.getElementById("filter-range").addEventListener("change", function(){ renderTable(allEntries); });
+  document.getElementById("filter-station").addEventListener("change", function(){ renderTable(allEntries); });
+
+  document.getElementById("entry-form").addEventListener("submit", function(e){
+    e.preventDefault();
+    var statusEl = document.getElementById("entry-status");
+    var notUsed = notUsedBox.checked;
+    var station = document.getElementById("f_station").value.trim();
+    var initials = document.getElementById("f_initials").value.trim();
+    if (!notUsed && !station) { statusEl.textContent = "Enter a station or mark not used today."; statusEl.className = "status-msg err"; return; }
+    if (!initials) { statusEl.textContent = "Initials are required."; statusEl.className = "status-msg err"; return; }
+    setInitials(initials);
+    var entry = {
+      date: document.getElementById("f_date").value || todayStr(),
+      time: notUsed ? "" : (document.getElementById("f_time").value || ""),
+      station: notUsed ? (station || "All stations") : station,
+      initials: initials,
+      notes: document.getElementById("f_notes").value.trim(),
+      notUsed: notUsed,
+      createdAt: new Date().toISOString()
+    };
+    if (key === "footspa") entry.type = notUsed ? "" : selectedType;
+    if (key === "liner") {
+      entry.linerUsed = notUsed ? false : document.getElementById("f_liner_used").checked;
+      entry.jetDisinfected = notUsed ? false : document.getElementById("f_jet_disinfected").checked;
+    }
+    var btn = e.target.querySelector("button[type=submit]");
+    btn.disabled = true;
+    addDoc(col(key), entry).then(function(){
+      statusEl.textContent = "Saved.";
+      statusEl.className = "status-msg ok";
+      document.getElementById("f_notes").value = "";
+      notUsedBox.checked = false;
+      toggleFields.forEach(function(id){ document.getElementById(id).disabled = false; });
+      document.getElementById("f_time").value = nowTimeStr();
+      btn.disabled = false;
+    }).catch(function(err){
+      statusEl.textContent = "Could not save (" + (err.code || "error") + "). Try again.";
+      statusEl.className = "status-msg err";
+      btn.disabled = false;
+    });
+  });
+}
+
+
+// ---------- init ----------
+route();
+})();
+</script>
+</body>
+</html>
