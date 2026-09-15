@@ -170,6 +170,16 @@
   .badge.notused { background: var(--border); color: var(--text-soft); }
   .empty-state { color: var(--text-soft); font-size: 0.88rem; padding: 24px 0; text-align: center; }
 
+  .ref-group { margin-bottom: 26px; }
+  .ref-group h2 { border-bottom: 1px solid var(--border); padding-bottom: 8px; margin-bottom: 4px; }
+  .ref-group .cite { color: var(--text-soft); font-size: 0.78rem; margin-bottom: 10px; }
+  details.ref { border-bottom: 1px solid var(--border); padding: 4px 0; }
+  details.ref summary { cursor: pointer; padding: 8px 4px; font-size: 0.93rem; font-weight: 500; list-style: none; }
+  details.ref summary::-webkit-details-marker { display: none; }
+  details.ref summary::before { content: "+"; color: var(--accent-strong); font-weight: 600; margin-right: 10px; display: inline-block; width: 12px; }
+  details.ref[open] summary::before { content: "\2212"; }
+  details.ref .ref-body { padding: 2px 4px 14px 26px; font-size: 0.88rem; color: var(--text-soft); }
+
   footer.note { margin-top: 50px; padding-top: 16px; border-top: 1px solid var(--border); font-size: 0.78rem; color: var(--text-soft); }
 
   @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
@@ -209,10 +219,12 @@ var CHECKLIST_GROUPS = [
   { title: "Your License", cite: "Tex. Occ. Code §1603.357", items: [
     "Your original license (with photo) displayed near your chair, OR available at the front desk (physical or digital)"
   ]},
-  { title: "Before Every Client", cite: "16 TAC §§83.101–83.102", items: [
+  { title: "Before Every Client", cite: "16 TAC §§83.101–83.102; Tex. Occ. Code §1603.209(a)", items: [
+    "You are not performing services if you know you have an infectious or contagious disease",
     "Hands washed with soap and water, or hand sanitizer used, before each service",
     "No service performed on a client with a contagious condition or broken/inflamed skin or nail tissue",
     "Manicure table disinfected before each client",
+    "Electrical equipment that can't be soaked (UV/LED curing lamps, etc.) wiped clean and disinfected before each client",
     "Disinfectant jars/containers free of visible debris; solution mixed fresh daily"
   ]},
   { title: "Manicure & Pedicure Tools", cite: "16 TAC §83.106", items: [
@@ -228,12 +240,87 @@ var CHECKLIST_GROUPS = [
     "Bits disinfected by full immersion between clients, then sterilized",
     "Buffing bits and chamois cleaned with soap and water at the end of each day"
   ]},
+  { title: "Blood & Body Fluids", cite: "16 TAC §83.111", items: [
+    "Only powdered alum, styptic powder, or a liquid bandage (cyanoacrylate) used to stop minor bleeding — never touch an open area directly",
+    "Applied with a disposable cotton-tipped applicator, discarded immediately after use",
+    "Blood or body fluid on any surface (table, chair, floor) immediately cleaned with a hospital-grade/tuberculocidal disinfectant or a 10% bleach solution",
+    "A non-porous tool touched by blood or body fluid immediately cleaned and disinfected, or fully immersed in a 10% bleach solution for 5 minutes",
+    "A porous item touched by blood or body fluid immediately double-bagged and discarded in a closed trash container or biohazard box"
+  ]},
   { title: "Prohibited Products & Practices", cite: "16 TAC §§83.112–83.113", items: [
     "No liquid MMA (methyl methacrylate monomer) on premises or in use",
     "No credo blades or razor-type callus shavers",
     "No alum or astringents in stick/lump form",
     "No formaldehyde-based fumigants",
     "Nothing used that penetrates the dermis layer of skin"
+  ]}
+];
+
+// ---------- full reference content ----------
+var REFERENCE_SECTIONS = [
+  { title: "Key Definitions", cite: "16 TAC §83.100", entries: [
+    { rule: "Multi-use items", text: "Hard, smooth-surfaced items meant for use on more than one client — clippers, scissors, combs, nippers, tweezers, some nail files." },
+    { rule: "Single-use items", text: "Porous items made of cloth, wood, or other absorbent material with rough surfaces, intended for one use — tissues, orangewood sticks, cotton balls, some buffer blocks, gauze." },
+    { rule: "Clean / cleansing", text: "Washing with soap and water, detergent, antiseptics, or another adequate method to remove all visible debris. Cleaning is NOT disinfection — it has to happen first." },
+    { rule: "Disinfect", text: "Using chemicals to destroy pathogens on hard, non-porous implements and surfaces, making them safe to handle, use, and dispose of." },
+    { rule: "Sterilize", text: "Eliminating all forms of bacteria or microorganisms using an autoclave or dry heat sterilizer." },
+    { rule: "Sanitize", text: "Reducing microorganisms to a safe level using an ultraviolet sanitizer." },
+    { rule: "Disinfectant (approved)", text: "Either an EPA-registered bactericidal, fungicidal, and virucidal disinfectant used per the manufacturer's instructions, or a chlorine bleach solution mixed per §83.101." }
+  ]},
+  { title: "General Sanitation Standards", cite: "16 TAC §§83.101–83.102", entries: [
+    { rule: "Disinfectant prep", text: "Implements/surfaces must be cleaned of all visible debris BEFORE disinfecting — a disinfectant becomes ineffective once contaminated. Solutions implements are immersed in must be prepared fresh daily, or more often if diluted/soiled. Always follow the manufacturer's instructions." },
+    { rule: "Chlorine bleach solutions", text: "Mixed daily. Kept in a closed, covered container, out of sunlight. Not stored near other chemicals (acrylic monomers, alcohol, etc.) or near flame — vapors can react. Don't leave scissors/sharp items in bleach beyond 2 minutes (5 minutes for blood contamination) — it damages them long-term. Used/soiled solution disposed of daily." },
+    { rule: "Hands & hygiene", text: "Wash hands with soap and water, or use hand sanitizer, before every service and as needed during it." },
+    { rule: "Who you can't service", text: "No services on a client you believe has a contagious condition — head lice, nits, ringworm, conjunctivitis — or inflamed, infected, broken, raised, or swollen skin/nail tissue, or an open wound/sore in the area to be serviced." },
+    { rule: "Multi-use vs. single-use", text: "Multi-use equipment/tools not otherwise addressed must be cleaned and disinfected before use on each client. Single-use/porous items not otherwise addressed must be discarded after one client." },
+    { rule: "Electrical equipment", text: "Anything that can't be immersed in liquid (dryers, lamps, etc.) must be wiped clean and disinfected before each use on a client." },
+    { rule: "Storage", text: "Clean, disinfected implements — when not in use — must be stored in a clean, dry, debris-free space (drawers, cases, tool belts, trays, hooks), kept SEPARATE from soiled implements. UV sanitizers are fine as dry storage. Non-industry supplies get their own separate storage." },
+    { rule: "Stations & floors", text: "Manicure tables disinfected before each client. Floors thoroughly cleaned daily; debris removed as soon as practicable. Trash emptied daily, kept clean (wash or use liners)." },
+    { rule: "Towels", text: "Clean towel for each client, washed in hot water + chlorine bleach. Soiled towels removed after each client into a suitable receptacle." },
+    { rule: "Product labeling", text: "All products used in the business must be properly labeled per OSHA requirements." }
+  ]},
+  { title: "Manicure & Pedicure Services", cite: "16 TAC §83.106", entries: [
+    { rule: "Before service", text: "Clean hands with soap/water or sanitizer. Clean the area of the client's body being serviced." },
+    { rule: "Metal tools", text: "ALL metal manicure/pedicure tools — regardless of whether they're used on one client or many — must be cleaned, disinfected, and sterilized or sanitized before each service." },
+    { rule: "After each client", text: "Metal pusher and files, cuticle nippers/scissors, metal tweezers, finger/toe nail clippers, and electric drill bits must be cleaned, disinfected, and sterilized or sanitized." },
+    { rule: "Single-use items", text: "Orangewood sticks, cotton balls, nail wipes, and disposable towels are discarded after each client." },
+    { rule: "Porous items", text: "Buffer blocks, porous nail files, pedicure files, callus rasps, natural pumice, foot brushes, arbor bands/sleeves, heel/toe pumice, and exfoliating blocks: brushed clean of debris after each use, then sprayed with an EPA-registered disinfectant or high-level bleach solution. If exposed to broken or unhealthy skin/nails, discard immediately instead." },
+    { rule: "Replaced per client", text: "Terry cloth towels, finger bowls, and spatulas that touch skin or product from multi-use containers get new/clean ones for every client." }
+  ]},
+  { title: "Electric Drill Bits", cite: "16 TAC §83.107", entries: [
+    { rule: "Equipment", text: "Only electric files/drills/machines specifically made for the professional nail industry — never craft, hardware, or hobby tools." },
+    { rule: "Cleaning", text: "After each use, diamond, carbide, natural, and metal bits are cleaned by brush, ultrasonic cleaner, or immersion in acetone for 5–10 minutes." },
+    { rule: "Disinfect & sterilize", text: "Immediately after cleaning, bits are fully immersed in an appropriate disinfectant between clients, then sterilized." },
+    { rule: "Buffing bits", text: "Buffing bits and chamois cleaned with soap and water at the end of every day, in addition to cleaning/replacing between clients." }
+  ]},
+  { title: "Foot Spas, Basins & Liners — Full Guidance", cite: "16 TAC §83.108", entries: [
+    { rule: "This site's active log", text: "Cio Bela currently uses non-whirlpool foot basins (sinks), so the site's required log covers those. This section is here for complete reference, including whirlpool-spa and portable-jet guidance, in case that ever changes." },
+    { rule: "Whirlpool foot spa — after each client", text: "Drain all water and remove debris. Clean the basin with soap/detergent and water. Disinfect with an EPA-registered disinfectant per manufacturer instructions. Wipe dry with a clean towel." },
+    { rule: "Whirlpool foot spa — end of day", text: "Remove the screen and any removable parts, clear trapped debris, wash with soap/detergent and water. Before replacing: wash the screen/parts with a high-level bleach solution, OR fully immerse them in an EPA-registered disinfectant. Flush the system with soap and warm water for at least 10 minutes, then rinse and drain." },
+    { rule: "Whirlpool foot spa — bi-weekly", text: "Fill completely with a high-level bleach solution. Flush the system for 5–10 minutes with that solution (or an EPA-registered disinfectant), then let it sit 6–10 hours. Drain and flush with water before using on a client again." },
+    { rule: "Whirlpool foot spa — record", text: "A record on a department-approved form is required: date/time of each cleaning, whether it was daily or bi-weekly, and whether the spa wasn't used on a given work day. Made at or near the time of cleaning." },
+    { rule: "Non-whirlpool foot basin — after each client", text: "Drain all water, remove debris. Scrub inside surfaces clean of visible residue with a clean brush, soap/detergent, and water. Disinfect with an EPA-registered disinfectant. Rinse, empty, and wipe dry with a clean towel." },
+    { rule: "Non-whirlpool foot basin — record", text: "A record on a department-approved form: date/time of each cleaning, and whether the basin wasn't used on a given work day." },
+    { rule: "Disposable spa liners & portable jets", text: "If used: pull the heat-sealed tab after each client so water empties into the plumbing; discard the liner in a covered trash receptacle. Fully immerse the portable jet in an EPA-registered disinfectant for 5–10 minutes, rinse with warm water, and drain. Wipe all spa basin and footrest surfaces with EPA-registered disinfectant wipes." },
+    { rule: "Liner/jet — record", text: "A record on a department-approved form: date/time each liner was used and discarded, date/time each jet was used and disinfected, and whether the jet wasn't used on a given work day." },
+    { rule: "All foot spa/basin/liner records", text: "Must be available on request to a client or TDLR representative, and retained for at least 60 days. A spa/basin/jet with no maintained documentation must be pulled from service until it's cleaned, disinfected, and the records are caught up. Chairs used with them must be cleaned/disinfected after each client and made of non-porous, disinfectable material." }
+  ]},
+  { title: "Blood & Body Fluids", cite: "16 TAC §83.111", entries: [
+    { rule: "Stopping minor bleeding", text: "Never touch an open sore or wound directly. Use powdered alum, styptic powder, or a cyanoacrylate (liquid bandage) to contract the skin — applied with a disposable cotton-tipped instrument, discarded immediately after." },
+    { rule: "Surface contact", text: "If blood/body fluid gets on a table, chair, or the floor, clean it up immediately with an EPA-registered hospital-grade disinfectant, a tuberculocidal disinfectant, or a blood/body-fluid bleach solution (per manufacturer instructions)." },
+    { rule: "Non-porous tool contact", text: "Immediately clean and disinfect with an EPA-registered hospital-grade or tuberculocidal disinfectant, OR fully immerse in a 10% bleach solution (1¾ cups household 5.25% bleach per gallon of water) for 5 minutes." },
+    { rule: "Porous item contact", text: "Immediately double-bag and discard in a closed trash container or biohazard box." }
+  ]},
+  { title: "Prohibited Products & Practices", cite: "16 TAC §§83.112–83.113", entries: [
+    { rule: "Never use", text: "Liquid MMA (methyl methacrylate monomers). Credo blades or other razor-type callus shavers. Alum/astringents in stick or lump form (powder or liquid forms are fine). Formaldehyde-based fumigants (tablets or liquid)." },
+    { rule: "Possession alone counts", text: "Simply having a banned/prohibited item on the licensed premises is treated as evidence you used it — don't keep it in the building at all." },
+    { rule: "Dermis rule", text: "No product, preparation, or procedure that comes into contact with or penetrates the dermis layer of skin." },
+    { rule: "FDA rule", text: "No product banned or deemed poisonous/unsafe by the FDA or another governmental agency. Possessing such an item on premises is treated as evidence of its use." }
+  ]},
+  { title: "Practitioner Responsibilities", cite: "16 TAC §83.70; Tex. Occ. Code §1603.209(a)", entries: [
+    { rule: "Clean appearance", text: "Wear clean outer garments and footwear." },
+    { rule: "Your own health", text: "Don't perform services if you know you're suffering from an infectious or contagious disease you're not entitled to protection for under the ADA." },
+    { rule: "Keep TDLR updated", text: "Notify TDLR in writing of a name change within 30 days. Notify TDLR of a mailing address change within 30 days." }
   ]}
 ];
 
@@ -258,6 +345,7 @@ function setInitials(v){ try { localStorage.setItem("cb_initials", v); } catch(e
 var TABS = [
   {path:"#/", label:"Home"},
   {path:"#/checklist", label:"Self-Audit Checklist"},
+  {path:"#/reference", label:"Full Reference"},
   {path:"#/log/basin", label:"Foot Basin"}
 ];
 
@@ -276,6 +364,7 @@ function route(){
   var app = document.getElementById("app");
   if (hash === "#/" || hash === "") { renderHome(app); }
   else if (hash === "#/checklist") { renderChecklist(app); }
+  else if (hash === "#/reference") { renderReference(app); }
   else if (hash.indexOf("#/log/") === 0) {
     var rest = hash.replace("#/log/","");
     var key = rest.split("?")[0];
@@ -300,6 +389,7 @@ function renderHome(app){
     '<p class="lede">Everything the nail service category needs to stay compliant with Texas Department of Licensing and Regulation (TDLR) health and safety rules — a running self-audit checklist, plus the cleaning logs TDLR requires you to keep on record. Logs sync live across every device and stay available for at least 60 days.</p>' +
     '<div class="card-grid">' +
       '<a class="card" href="#/checklist"><span class="tag">SELF-AUDIT</span><h3>Compliance Checklist</h3><p>Facility, sanitation, tools, postings, and prohibited products — everything TDLR looks for during an inspection.</p></a>' +
+      '<a class="card" href="#/reference"><span class="tag">FULL REFERENCE</span><h3>Complete TDLR Guidance</h3><p>Every rule, definition, and requirement for nail services, organized and searchable — not just the checklist version.</p></a>' +
       '<a class="card" href="#/log/basin"><span class="tag">REQUIRED LOG</span><h3>Foot Basin</h3><p>Non-whirlpool basin cleaning records, §83.108(f)-(g).</p></a>' +
     '</div>' +
     '<footer class="note">Built for Cio Bela Multi-Service Salon. This tool organizes recordkeeping; it does not replace reading 16 Texas Administrative Code Chapter 83 or TDLR\'s own forms and guidance.</footer>';
@@ -347,6 +437,23 @@ function renderChecklist(app){
     }, function(err){
       body.innerHTML = '<p>Could not load checklist right now (' + esc(err.code || 'error') + '). Try reloading.</p>';
     });
+}
+
+// ---------- full reference ----------
+function renderReference(app){
+  app.innerHTML = '<h1>Full TDLR Reference — Nails</h1>' +
+    '<p class="lede">Every rule, definition, and piece of guidance TDLR publishes for nail services — not just the checklist version. Tap a line to expand it.</p>' +
+    '<div id="reference-body"></div>';
+  var body = document.getElementById("reference-body");
+  var html = "";
+  REFERENCE_SECTIONS.forEach(function(sec){
+    html += '<div class="ref-group"><h2>' + esc(sec.title) + '</h2><div class="cite">' + esc(sec.cite) + '</div>';
+    sec.entries.forEach(function(e){
+      html += '<details class="ref"><summary>' + esc(e.rule) + '</summary><div class="ref-body">' + esc(e.text) + '</div></details>';
+    });
+    html += '</div>';
+  });
+  body.innerHTML = html;
 }
 
 // ---------- log pages ----------
