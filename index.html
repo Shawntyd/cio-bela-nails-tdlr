@@ -179,6 +179,7 @@
   details.ref summary::before { content: "+"; color: var(--accent-strong); font-weight: 600; margin-right: 10px; display: inline-block; width: 12px; }
   details.ref[open] summary::before { content: "\2212"; }
   details.ref .ref-body { padding: 2px 4px 14px 26px; font-size: 0.88rem; color: var(--text-soft); }
+  input.search-bar { width: 100%; font-size: 0.95rem; padding: 12px 14px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); color: var(--text); margin: 4px 0 22px; }
 
   footer.note { margin-top: 50px; padding-top: 16px; border-top: 1px solid var(--border); font-size: 0.78rem; color: var(--text-soft); }
 
@@ -442,18 +443,32 @@ function renderChecklist(app){
 // ---------- full reference ----------
 function renderReference(app){
   app.innerHTML = '<h1>Full TDLR Reference — Nails</h1>' +
-    '<p class="lede">Every rule, definition, and piece of guidance TDLR publishes for nail services — not just the checklist version. Tap a line to expand it.</p>' +
+    '<p class="lede">Every rule, definition, and piece of guidance TDLR publishes for nail services — not just the checklist version.</p>' +
+    '<input type="search" class="search-bar" id="ref-search" placeholder="Search rules — e.g. \u201cbleach,\u201d \u201cgloves,\u201d \u201cblood\u201d">' +
     '<div id="reference-body"></div>';
-  var body = document.getElementById("reference-body");
-  var html = "";
-  REFERENCE_SECTIONS.forEach(function(sec){
-    html += '<div class="ref-group"><h2>' + esc(sec.title) + '</h2><div class="cite">' + esc(sec.cite) + '</div>';
-    sec.entries.forEach(function(e){
-      html += '<details class="ref"><summary>' + esc(e.rule) + '</summary><div class="ref-body">' + esc(e.text) + '</div></details>';
+  var input = document.getElementById('ref-search');
+  function draw(qRaw){
+    var q = (qRaw || '').toLowerCase().trim();
+    var body = document.getElementById('reference-body');
+    var html = '';
+    var any = false;
+    REFERENCE_SECTIONS.forEach(function(sec){
+      var matches = sec.entries.filter(function(e){
+        if (!q) return true;
+        return (e.rule + ' ' + e.text + ' ' + sec.title + ' ' + sec.cite).toLowerCase().indexOf(q) !== -1;
+      });
+      if (!matches.length) return;
+      any = true;
+      html += '<div class="ref-group"><h2>' + esc(sec.title) + '</h2><div class="cite">' + esc(sec.cite) + '</div>';
+      matches.forEach(function(e){
+        html += '<details class="ref"' + (q ? ' open' : '') + '><summary>' + esc(e.rule) + '</summary><div class="ref-body">' + esc(e.text) + '</div></details>';
+      });
+      html += '</div>';
     });
-    html += '</div>';
-  });
-  body.innerHTML = html;
+    body.innerHTML = any ? html : '<div class="empty-state">No matches for &ldquo;' + esc(qRaw) + '&rdquo;.</div>';
+  }
+  draw('');
+  input.addEventListener('input', function(){ draw(input.value); });
 }
 
 // ---------- log pages ----------
