@@ -163,6 +163,8 @@
   table.log { width: 100%; border-collapse: collapse; font-size: 0.85rem; margin-top: 8px; }
   table.log th, table.log td { text-align: left; padding: 9px 10px; border-bottom: 1px solid var(--border); }
   table.log th { color: var(--text-soft); font-weight: 500; font-size: 0.75rem; text-transform: none; }
+  .del-btn { background: none; border: 1px solid var(--danger); color: var(--danger); border-radius: 6px; padding: 3px 9px; font-size: 0.75rem; cursor: pointer; }
+  .admin-unlock { background: none; border: none; color: var(--text-soft); font-size: 0.75rem; text-decoration: underline; cursor: pointer; margin-left: auto; }
   table.log tr.not-used td { color: var(--text-soft); font-style: italic; }
   .badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 0.72rem; }
   .badge.daily { background: var(--ok-bg); color: var(--ok-text); }
@@ -197,7 +199,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {
   getFirestore, doc, setDoc, onSnapshot,
-  collection, addDoc, query, orderBy, limit
+  collection, addDoc, query, orderBy, limit, deleteDoc
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 // Firebase config for the cio-bela-tdlr-compliance project.
@@ -494,6 +496,7 @@ function renderLog(app, key, presetStation){
     '<div class="filter-bar">' +
       '<select id="filter-range"><option value="60">Last 60 days</option><option value="7">Last 7 days</option><option value="all">All entries</option></select>' +
       '<select id="filter-station"><option value="">All stations</option></select>' +
+      '<button type="button" class="admin-unlock" id="admin-unlock"></button>' +
     '</div>' +
     '<div id="log-table"><div class="empty-state">Loading records…</div></div>';
 
@@ -507,6 +510,23 @@ function renderLog(app, key, presetStation){
   notUsedBox.addEventListener("change", function(){
     var disabled = notUsedBox.checked;
     toggleFields.forEach(function(id){ document.getElementById(id).disabled = disabled; });
+  });
+
+  var ADMIN_CODE = "4834";
+  var adminOn = false;
+  try { adminOn = sessionStorage.getItem("cb_log_admin") === "1"; } catch(e){}
+  var unlockBtn = document.getElementById("admin-unlock");
+  function syncUnlock(){ unlockBtn.textContent = adminOn ? "Lock edit mode" : "Owner edit"; }
+  syncUnlock();
+  unlockBtn.addEventListener("click", function(){
+    if (adminOn) { adminOn = false; try { sessionStorage.removeItem("cb_log_admin"); } catch(e){} }
+    else {
+      var code = window.prompt("Owner passcode");
+      if (code === null) return;
+      if (code.trim() !== ADMIN_CODE) { window.alert("Incorrect passcode."); return; }
+      adminOn = true; try { sessionStorage.setItem("cb_log_admin", "1"); } catch(e){}
+    }
+    syncUnlock(); renderTable(allEntries);
   });
 
   var allEntries = [];
@@ -562,10 +582,22 @@ function renderLog(app, key, presetStation){
         '<td>' + badge + '</td>' +
         '<td>' + esc(e.initials||'') + '</td>' +
         '<td>' + esc(e.notes||'') + '</td>' +
+        (adminOn ? '<td><button type="button" class="del-btn" data-id="' + esc(e._id) + '">Delete</button></td>' : '') +
         '</tr>';
     }).join("");
-    holder.innerHTML = '<table class="log"><thead><tr><th>Date</th><th>Time</th><th>Station</th><th>Type</th><th>By</th><th>Notes</th></tr></thead><tbody>' + rows + '</tbody></table>';
+    holder.innerHTML = '<table class="log"><thead><tr><th>Date</th><th>Time</th><th>Station</th><th>Type</th><th>By</th><th>Notes</th>' + (adminOn ? '<th></th>' : '') + '</tr></thead><tbody>' + rows + '</tbody></table>';
   }
+
+  document.getElementById("log-table").addEventListener("click", function(ev){
+    var b = ev.target.closest && ev.target.closest(".del-btn");
+    if (!b || !adminOn) return;
+    if (!window.confirm("Delete this entry? This cannot be undone.")) return;
+    b.disabled = true;
+    deleteDoc(doc(db, "nails/" + key + "/logs", b.getAttribute("data-id"))).catch(function(err){
+      b.disabled = false;
+      window.alert("Could not delete (" + (err.code || "error") + ").");
+    });
+  });
 
   document.getElementById("filter-range").addEventListener("change", function(){ renderTable(allEntries); });
   document.getElementById("filter-station").addEventListener("change", function(){ renderTable(allEntries); });
